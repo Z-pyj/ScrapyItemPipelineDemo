@@ -81,6 +81,7 @@ class ElasticsearchPipeline(object):
 
 
 class ImagePipeline(ImagesPipeline):
+    # request:当前下载对应的Request对象
     def file_path(self, request, response=None, info=None):
         movie = request.meta['movie']
         type = request.meta['type']
@@ -95,9 +96,11 @@ class ImagePipeline(ImagesPipeline):
         return item
 
     def get_media_requests(self, item, info):
+        # item:爬取的item对象
         for director in item['directors']:
             director_name = director['name']
             director_image = director['image']
+            # 将url一个一个取出,构造Request发起下载请求,同时指定meta信息
             yield Request(director_image, meta={
                 'name': director_name,
                 'type': 'director',
