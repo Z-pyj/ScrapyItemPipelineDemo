@@ -7,8 +7,7 @@ from scrapy import Item, Field
 
 
 class MovieItem(Item):
-    mongodb_collection_name = 'movies'
-    
+
     name = Field()
     categories = Field()
     drama = Field()
