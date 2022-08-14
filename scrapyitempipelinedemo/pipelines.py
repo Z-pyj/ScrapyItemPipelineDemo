@@ -83,12 +83,16 @@ class ElasticsearchPipeline(object):
 class ImagePipeline(ImagesPipeline):
     # request:当前下载对应的Request对象
     def file_path(self, request, response=None, info=None):
+        # 获取刚才生成的Request的meta信息，拼接后作为最终的图片路径
         movie = request.meta['movie']
         type = request.meta['type']
         name = request.meta['name']
         file_name = f'{movie}/{type}/{name}.jpg'
         return file_name
 
+    # 单个item完成下载时的处理方法
+    # result：该item对应的下载结果，他是一个列表，列表的每个元素是一个元组
+    # 其中包含了下载成功或是失败的信息，
     def item_completed(self, results, item, info):
         image_paths = [x['path'] for ok, x in results if ok]
         if not image_paths:
@@ -97,6 +101,7 @@ class ImagePipeline(ImagesPipeline):
 
     def get_media_requests(self, item, info):
         # item:爬取的item对象
+        # 将URL逐个取出，构造Request发起下载请求
         for director in item['directors']:
             director_name = director['name']
             director_image = director['image']
